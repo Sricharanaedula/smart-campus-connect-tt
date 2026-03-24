@@ -1,148 +1,149 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import { apiService } from '../api/services'
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { apiService } from '../api/services';
+import Logo from '../components/Logo';
+import { Mail, Lock, AlertCircle, ArrowRight } from 'lucide-react';
 
 export default function LoginPage() {
-  const navigate = useNavigate()
-  const { login } = useAuth()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [rememberMe, setRememberMe] = useState(false)
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError('')
-    setIsLoading(true)
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
 
     try {
-      const response = await apiService.login(email, password)
+      const response = await apiService.login(email, password);
       if (response.success) {
-        login(response.user)
-        navigate('/dashboard')
+        login(response.user);
+        navigate('/dashboard');
       }
     } catch (err) {
-      setError(err.message || 'Login failed. Please try again.')
+      setError(err.message || 'Incorrect email or password. Please try again.');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-600 to-primary-800 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Logo and Title */}
-        <div className="text-center mb-8">
-          <div className="text-6xl mb-4">🎓</div>
-          <h1 className="text-4xl font-bold text-white mb-2">Student Services</h1>
-          <p className="text-primary-100">Portal</p>
+    <div className="min-h-screen bg-background-light dark:bg-background-dark flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden transition-colors duration-300">
+      
+      {/* Background decoration */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary-500/10 dark:bg-primary-500/5 blur-[100px]" />
+         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-accent-500/10 dark:bg-accent-500/5 blur-[100px]" />
+      </div>
+
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="flex justify-center mb-6">
+          <Link to="/">
+            <Logo />
+          </Link>
         </div>
+        <h2 className="mt-2 text-center text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          Welcome back
+        </h2>
+        <p className="mt-2 text-center text-sm text-slate-600 dark:text-slate-400">
+          Enter your credentials to access your account
+        </p>
+      </div>
 
-        {/* Login Card */}
-        <div className="bg-white rounded-lg shadow-soft-lg p-8 mb-4">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Welcome Back</h2>
-
-          {/* Error Message */}
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white dark:bg-slate-900 py-8 px-4 shadow-soft-lg sm:rounded-2xl sm:px-10 border border-slate-100 dark:border-slate-800">
+          
           {error && (
-            <div className="mb-6 p-4 bg-danger-50 border border-danger-200 rounded-lg">
-              <p className="text-sm text-danger-600 font-medium">{error}</p>
+            <div className="mb-6 p-4 bg-danger-50 dark:bg-danger-500/10 border border-danger-200 dark:border-danger-500/20 rounded-xl flex items-start gap-3 animate-in fade-in zoom-in duration-200">
+              <AlertCircle className="text-danger-500 mt-0.5" size={18} />
+              <p className="text-sm text-danger-700 dark:text-danger-400 font-medium">{error}</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit}>
-            {/* Email Field */}
-            <div className="mb-5">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Student Email
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                Email Address
               </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="student@university.edu"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-colors"
-                required
-              />
-            </div>
-
-            {/* Password Field */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-colors"
-                required
-              />
-            </div>
-
-            {/* Remember Me and Forgot Password */}
-            <div className="flex items-center justify-between mb-6">
-              <label className="flex items-center gap-2 cursor-pointer">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-slate-400" />
+                </div>
                 <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl leading-5 bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-all"
+                  placeholder="student@university.edu"
+                  required
                 />
-                <span className="text-sm text-gray-600">Remember me</span>
-              </label>
-              <a href="#" className="text-sm text-primary-600 hover:text-primary-700 font-medium">
-                Forgot Password?
-              </a>
+              </div>
             </div>
 
-            {/* Login Button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-primary-600 hover:bg-primary-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors mb-3"
-            >
-              {isLoading ? 'Signing in...' : 'Sign In'}
-            </button>
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                   Password
+                 </label>
+                 <a href="#" className="text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-500 transition-colors">
+                   Forgot password?
+                 </a>
+              </div>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-slate-400" />
+                </div>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl leading-5 bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-all"
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-70 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
+              >
+                {isLoading ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <>
+                    Sign in <ArrowRight size={18} />
+                  </>
+                )}
+              </button>
+            </div>
           </form>
 
-          {/* Divider */}
-          <div className="relative mb-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
+          <div className="mt-8">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white dark:bg-slate-900 text-slate-500">Demo Credentials</span>
+              </div>
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or</span>
+
+            <div className="mt-6 grid grid-cols-1 gap-3">
+              <div className="w-full inline-flex justify-center flex-col items-center py-3 px-4 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-950">
+                 <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Email: <span className="font-mono text-primary-600 dark:text-primary-400 font-medium">demo@university.edu</span></p>
+                 <p className="text-xs text-slate-500 dark:text-slate-400">Password: <span className="font-mono text-primary-600 dark:text-primary-400 font-medium">password123</span></p>
+              </div>
             </div>
           </div>
-
-          {/* Demo Credentials */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-xs text-gray-600 mb-2">
-              <strong>Demo Credentials:</strong>
-            </p>
-            <p className="text-xs text-gray-600 mb-1">
-              Email: <code className="bg-white px-2 py-1 rounded text-primary-600">demo@university.edu</code>
-            </p>
-            <p className="text-xs text-gray-600">
-              Password: <code className="bg-white px-2 py-1 rounded text-primary-600">password123</code>
-            </p>
-          </div>
-        </div>
-
-        {/* Footer Links */}
-        <div className="text-center">
-          <p className="text-primary-100 text-sm mb-4">
-            Don't have an account?{' '}
-            <a href="#" className="text-white font-semibold hover:underline">
-              Contact IT Support
-            </a>
-          </p>
-          <p className="text-primary-200 text-xs">© 2024 Student Services Portal. All rights reserved.</p>
         </div>
       </div>
     </div>
-  )
+  );
 }
